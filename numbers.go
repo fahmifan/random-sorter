@@ -34,7 +34,7 @@ func stringToInt(s string) int {
 
 // current data is int
 func populateData() ([]Data, error) {
-	file, err := os.Open("./data.out")
+	file, err := os.Open("data.out")
 	if err != nil {
 		return nil, err
 	}
