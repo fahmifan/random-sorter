@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"rebalance-test/utils"
 	"time"
 
 	"github.com/go-chi/chi"
@@ -30,6 +31,12 @@ func main() {
 		log.Fatal(err)
 	}
 
+	port := getPort()
+	ip, err := utils.PrivateIP()
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	r := chi.NewRouter()
 	r.Get("/api/ping", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("pong"))
@@ -38,13 +45,11 @@ func main() {
 		now := time.Now()
 		sortNumber(data)
 		since := time.Since(now)
-		res := fmt.Sprintf("finished sorting in %f second\n", since.Seconds())
+		res := fmt.Sprintf("finished sorting in %.3f second from %s%s\n", since.Seconds(), ip, port)
 
 		w.Write([]byte(res))
 	})
 
-	port := getPort()
-
-	log.Printf("start http server on port %s", port)
+	log.Printf("start http server on at %s%s", ip, port)
 	log.Fatal(http.ListenAndServe(port, r))
 }
