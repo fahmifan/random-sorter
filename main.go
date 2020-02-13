@@ -13,6 +13,11 @@ import (
 	"github.com/go-chi/cors"
 )
 
+var (
+	// in nanosecond
+	sleep int = 0
+)
+
 // port in format `:portNumber`
 func getPort() string {
 	port := ":8000"
@@ -27,6 +32,10 @@ func getPort() string {
 }
 
 func main() {
+	if val, ok := os.LookupEnv("SLEEP"); ok {
+		sleep = stringToInt(val)
+	}
+
 	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)

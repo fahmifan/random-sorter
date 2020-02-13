@@ -18,10 +18,12 @@ type ByIntAscSlow []Data
 
 func (a ByIntAscSlow) Len() int { return len(a) }
 func (a ByIntAscSlow) Less(i, j int) bool {
-	time.Sleep(time.Nanosecond * 100)
 	return a[i].Int < a[j].Int
 }
-func (a ByIntAscSlow) Swap(i, j int) { a[i], a[j] = a[j], a[i] }
+func (a ByIntAscSlow) Swap(i, j int) {
+	time.Sleep(time.Nanosecond * time.Duration(sleep))
+	a[i], a[j] = a[j], a[i]
+}
 
 func stringToInt(s string) int {
 	n, err := strconv.Atoi(s)
