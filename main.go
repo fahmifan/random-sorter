@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path"
 	"rebalance-test/utils"
 	"time"
 
@@ -26,11 +27,19 @@ func getPort() string {
 }
 
 func main() {
-	log.Println("load data from file")
-	data, err := populateData()
+	dir, err := os.Getwd()
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	fpath := path.Join(dir, "data.out")
+	log.Printf("load file from: %s\n", fpath)
+
+	data, err := populateData(fpath)
+	if err != nil {
+		log.Fatal(err)
+	}
+	log.Println("finish populate data")
 
 	port := getPort()
 	ip, err := utils.PrivateIP()

@@ -33,8 +33,8 @@ func stringToInt(s string) int {
 }
 
 // current data is int
-func populateData() ([]Data, error) {
-	file, err := os.Open("data.out")
+func populateData(fpath string) ([]Data, error) {
+	file, err := os.Open(fpath)
 	if err != nil {
 		return nil, err
 	}
