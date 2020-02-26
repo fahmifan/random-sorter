@@ -21,7 +21,7 @@ func (a ByIntAscSlow) Less(i, j int) bool {
 	return a[i].Int < a[j].Int
 }
 func (a ByIntAscSlow) Swap(i, j int) {
-	time.Sleep(time.Nanosecond * time.Duration(sleep))
+	// time.Sleep(time.Nanosecond * time.Duration(sleep))
 	a[i], a[j] = a[j], a[i]
 }
 
@@ -53,5 +53,6 @@ func populateData(fpath string) ([]Data, error) {
 }
 
 func sortNumber(data []Data) {
+	time.Sleep(time.Millisecond * time.Duration(sleep))
 	sort.Sort(ByIntAscSlow(data))
 }
