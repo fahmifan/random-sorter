@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	nums, err := faker.RandomInt(1, 100000)
+	nums, err := faker.RandomInt(1, 50000)
 	if err != nil {
 		log.Fatal(err)
 	}

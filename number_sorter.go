@@ -3,27 +3,8 @@ package main
 import (
 	"bufio"
 	"os"
-	"sort"
 	"strconv"
-	"time"
 )
-
-// Data :nodoc:
-type Data struct {
-	Int int
-}
-
-// ByIntAscSlow sort Data by Int ascendign
-type ByIntAscSlow []Data
-
-func (a ByIntAscSlow) Len() int { return len(a) }
-func (a ByIntAscSlow) Less(i, j int) bool {
-	return a[i].Int < a[j].Int
-}
-func (a ByIntAscSlow) Swap(i, j int) {
-	// time.Sleep(time.Nanosecond * time.Duration(sleep))
-	a[i], a[j] = a[j], a[i]
-}
 
 func stringToInt(s string) int {
 	n, err := strconv.Atoi(s)
@@ -35,7 +16,7 @@ func stringToInt(s string) int {
 }
 
 // current data is int
-func populateData(fpath string) ([]Data, error) {
+func populateData(fpath string) ([]int, error) {
 	file, err := os.Open(fpath)
 	if err != nil {
 		return nil, err
@@ -44,15 +25,22 @@ func populateData(fpath string) ([]Data, error) {
 
 	scanner := bufio.NewScanner(file)
 
-	data := []Data{}
+	var data []int
 	for scanner.Scan() {
-		data = append(data, Data{Int: stringToInt(scanner.Text())})
+		data = append(data, stringToInt(scanner.Text()))
 	}
 
 	return data, nil
 }
 
-func sortNumber(data []Data) {
-	time.Sleep(time.Millisecond * time.Duration(sleep))
-	sort.Sort(ByIntAscSlow(data))
+// buble sorts
+func sortNumber(data []int) {
+	for i := 0; i < len(data)-1; i++ {
+		for j := 0; j < len(data)-1; j++ {
+			if data[j] > data[j+1] {
+				// swap
+				data[j], data[j+1] = data[j+1], data[j]
+			}
+		}
+	}
 }

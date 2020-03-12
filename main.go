@@ -75,7 +75,9 @@ func main() {
 	})
 	r.Get("/api/sorts", func(w http.ResponseWriter, r *http.Request) {
 		now := time.Now()
-		sortNumber(data)
+		datac := make([]int, len(data))
+		copy(datac, data)
+		sortNumber(datac)
 		since := time.Since(now)
 		res := fmt.Sprintf("finished sorting in %.3f second from %s%s\n", since.Seconds(), ip, port)
 
