@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -14,27 +15,17 @@ import (
 )
 
 var (
-	// in nanosecond
-	sleep int = 0
+	debug bool
+	port  int
 )
 
-// port in format `:portNumber`
-func getPort() string {
-	port := ":8000"
-	if val, ok := os.LookupEnv("PORT"); ok {
-		p := stringToInt(val)
-		if p >= 3000 {
-			port = fmt.Sprintf(":%d", p)
-		}
-	}
-
-	return port
+func init() {
+	flag.BoolVar(&debug, "debug", false, "--debug true (default to false)")
+	flag.IntVar(&port, "port", 8081, "--port 8082 (default 8081)")
 }
 
 func main() {
-	if val, ok := os.LookupEnv("SLEEP"); ok {
-		sleep = stringToInt(val)
-	}
+	flag.Parse()
 
 	dir, err := os.Getwd()
 	if err != nil {
@@ -50,7 +41,6 @@ func main() {
 	}
 	log.Println("finish populate data")
 
-	port := getPort()
 	ip, err := utils.PrivateIP()
 	if err != nil {
 		log.Fatal(err)
@@ -59,9 +49,7 @@ func main() {
 	r := chi.NewRouter()
 
 	cors := cors.New(cors.Options{
-		// AllowedOrigins: []string{"https://foo.com"}, // Use this to allow specific origin hosts
-		AllowedOrigins: []string{"*"},
-		// AllowOriginFunc:  func(r *http.Request, origin string) bool { return true },
+		AllowedOrigins:   []string{"*"},
 		AllowedMethods:   []string{"GET", "POST", "PUT", "DELETE", "OPTIONS"},
 		AllowedHeaders:   []string{"Accept", "Authorization", "Content-Type", "X-CSRF-Token"},
 		ExposedHeaders:   []string{"Link"},
@@ -79,11 +67,14 @@ func main() {
 		copy(datac, data)
 		sortNumber(datac)
 		since := time.Since(now)
-		res := fmt.Sprintf("finished sorting in %.3f second from %s%s\n", since.Seconds(), ip, port)
-
+		res := fmt.Sprintf("finished sorting in %.3f second from %s:%d\n", since.Seconds(), ip, port)
+		time.Sleep(1 * time.Second) // slow down
+		if debug {
+			log.Println(res)
+		}
 		w.Write([]byte(res))
 	})
 
-	log.Printf("start http server on at %s%s", ip, port)
-	log.Fatal(http.ListenAndServe(port, r))
+	log.Printf("start http server on at %s:%d", ip, port)
+	log.Fatal(http.ListenAndServe(fmt.Sprint(":", port), r))
 }
